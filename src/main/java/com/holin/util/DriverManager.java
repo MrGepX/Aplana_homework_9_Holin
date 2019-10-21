@@ -4,32 +4,39 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Properties;
 
 public class DriverManager {
+
+	public static Properties properties = TestProperties.getInstance().getProperties();
 
 	private static WebDriver driver;
 
 	public static WebDriver getDriver() {
 
-		switch (TestProperties.getInstance().getProperties().getProperty("browser")) {
+		switch (properties.getProperty("browser")) {
 			case "chrome" : if (driver == null) {
 				System.setProperty(
-					TestProperties.getInstance().getProperties().getProperty("chromeDriverName"),
-					TestProperties.getInstance().getProperties().getProperty("chromeDriverPath"));
+					properties.getProperty("chromeDriverName"),
+					properties.getProperty("chromeDriverPath"));
 					driver = new ChromeDriver();
 				}
 				break;
 			case "firefox" : if (driver == null) {
 				System.setProperty(
-					TestProperties.getInstance().getProperties().getProperty("firefoxDriverName"),
-					TestProperties.getInstance().getProperties().getProperty("firefoxDriverPath"));
+					properties.getProperty("firefoxDriverName"),
+					properties.getProperty("firefoxDriverPath"));
 					driver = new FirefoxDriver();
 				}
 				break;
 		}
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
 		return driver;
+	}
+
+	public static void close(){
+		if (driver!=null){
+			driver.quit();
+			driver = null;
+		}
 	}
 }

@@ -1,11 +1,14 @@
 package com.holin.pages;
 
 import com.holin.util.AttachmentsCreator;
+import com.holin.util.DriverManager;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -32,11 +35,11 @@ public class ResultPage extends BasePage {
 
     @Step ("Выбрать чекбокс {name}")
     public void chooseCheckbox(String name) {
-        if (driver.findElements(By.xpath("//span [@data-test-id = 'filter-block-brand-show-all']")).size() != 0) {
+        if (isPresent(By.xpath("//span [@data-test-id = 'filter-block-brand-show-all']"))) {
             waitAndClick(driver.findElement(By.xpath("//span [@data-test-id = 'filter-block-brand-show-all']")));
         }
 
-        if (driver.findElements(By.xpath("//div [@class = 'input-wrap search-input']/input")).size() != 0) {
+        if (isPresent(By.xpath("//div [@class = 'input-wrap search-input']/input"))) {
             WebElement brandInput = driver.findElement(By.xpath("//div [@class = 'input-wrap search-input']/input"));
             waitAndClick(brandInput);
             brandInput.sendKeys(name);
@@ -47,7 +50,8 @@ public class ResultPage extends BasePage {
         for (WebElement element: checkboxLabel) {
             if (element.getText().contains(name)) {
                 waitAndClick(element);
-                waitForChanges(resultCounterElement, resultCounter);
+                new WebDriverWait(DriverManager.getDriver(), 10).until((ExpectedCondition<Boolean>) driver ->
+                                !isPresent(By.xpath("//*[@class='modal-wrapper']")));
                 return;
             }
         }

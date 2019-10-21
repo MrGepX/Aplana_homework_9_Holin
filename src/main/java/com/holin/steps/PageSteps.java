@@ -41,7 +41,7 @@ public class PageSteps {
 
     @When("Переходим в корзину")
     public void goToBasket() {
-        driver.get(TestProperties.getInstance().getProperties().getProperty("app.basketurl"));
+        driver.get(DriverManager.properties.getProperty("app.basketurl"));
     }
 
     @When("Проверяем наличие товаров в соответствии с запомненным")

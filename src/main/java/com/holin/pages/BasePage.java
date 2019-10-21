@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class BasePage {
@@ -42,11 +43,11 @@ public class BasePage {
 	}
 
 	public void waitAndClick(WebElement webElement) {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", webElement);
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, 5, 200);
 			wait.until(ExpectedConditions.elementToBeClickable(webElement)).click();
 		} catch (WebDriverException e) {
-			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", webElement);
 			webElement.click();
 		}
 	}
@@ -71,5 +72,16 @@ public class BasePage {
 			}
 		}
 		return maxEntry.getKey() + " " + maxEntry.getValue();
+	}
+
+	public boolean isPresent(By locator){
+		try {
+			DriverManager.getDriver().manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+			return DriverManager.getDriver().findElement(locator).isDisplayed();
+		}catch (NoSuchElementException e){
+			return false;
+		}finally {
+			DriverManager.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		}
 	}
 }
